@@ -6,39 +6,33 @@
     <title>IlluminateX | Model Checker</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .console-select { display: flex; justify-content: center; gap: 30px; margin-bottom: 40px; flex-wrap: wrap; }
-        .console-option {
-            background: var(--bg-panel); border: 2px solid rgba(212, 175, 55, 0.2);
-            border-radius: 15px; padding: 20px; text-align: center; cursor: pointer;
-            transition: 0.3s; width: 180px;
-        }
-        .console-option:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .console-option.selected { border-color: var(--gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); background: rgba(74, 14, 120, 0.4); }
-        .console-option img { width: 120px; height: auto; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); border-radius: 10px; }
-        .console-option h3 { font-size: 1.1rem; margin: 0; }
+        /* Scoped styles for the checker */
+        .console-select { display: flex; justify-content: flex-start; gap: 30px; margin-bottom: 50px; flex-wrap: wrap; }
+        .console-option { background: var(--bg-panel); border: 1px solid rgba(212, 175, 55, 0.2); padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; width: 200px; }
+        .console-option:hover { border-color: var(--gold); }
+        .console-option.selected { border-color: var(--gold); background: rgba(74, 14, 120, 0.4); box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.2); }
+        .console-option img { width: 100%; height: auto; margin-bottom: 15px; border-radius: 5px; }
+        .console-option h3 { font-size: 1rem; margin: 0; letter-spacing: 1px;}
         
-        .checker-box { max-width: 600px; margin: 0 auto; background: var(--bg-panel); padding: 40px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); backdrop-filter: blur(15px); }
-        .input-group { display: flex; gap: 10px; margin-top: 20px; }
-        .input-group input {
-            flex: 1; padding: 15px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.3);
-            background: rgba(0,0,0,0.5); color: white; font-size: 1.1rem; text-transform: uppercase;
-        }
+        .checker-box { max-width: 800px; background: var(--bg-panel); padding: 50px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .input-group { display: flex; gap: 15px; margin-top: 20px; }
+        .input-group input { flex: 1; padding: 15px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px;}
         .input-group input:focus { outline: none; border-color: var(--gold); }
         
-        .result-box { margin-top: 30px; padding: 30px; border-radius: 15px; text-align: center; display: none; }
-        .result-success { background: rgba(16, 185, 129, 0.15); border: 2px solid var(--success); }
-        .result-fail { background: rgba(239, 68, 68, 0.15); border: 2px solid var(--danger); }
-        .result-hen { background: rgba(245, 158, 11, 0.15); border: 2px solid var(--warning); }
+        .result-box { margin-top: 40px; padding: 40px; border-left: 4px solid; display: none; background: rgba(0,0,0,0.6); }
+        .result-success { border-color: var(--success); }
+        .result-fail { border-color: var(--danger); }
+        .result-hen { border-color: var(--warning); }
         
-        .result-icon { font-size: 4rem; margin-bottom: 15px; }
-        .result-title { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
-        .result-desc { color: var(--text-muted); font-size: 1rem; margin-bottom: 20px; }
+        .result-icon { font-size: 3rem; margin-bottom: 10px; }
+        .result-title { font-size: 2rem; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; }
+        .result-desc { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; }
         
-        .action-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .action-buttons { display: flex; gap: 20px; flex-wrap: wrap; }
         .btn-cfw { background: transparent; border: 2px solid var(--purple-bright); color: var(--purple-bright); }
-        .btn-cfw:hover { background: var(--purple-bright); color: white; box-shadow: 0 0 20px var(--purple-bright); }
+        .btn-cfw:hover { background: var(--purple-bright); color: white; }
         .btn-hen { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
-        .btn-hen:hover { background: var(--gold); color: var(--bg-dark); box-shadow: 0 0 20px var(--gold); }
+        .btn-hen:hover { background: var(--gold); color: var(--bg-dark); }
     </style>
 </head>
 <body>
@@ -55,33 +49,30 @@
         </div>
     </nav>
     <main>
-        <h2 class="page-title gold-text">PS3 Model Checker</h2>
-        <p class="page-subtitle">Select your console type, then type your model number.</p>
+        <h2 class="page-title gold-text">Console Checker</h2>
+        <p class="page-subtitle">Select your model and verify jailbreak compatibility.</p>
 
-        <div class="console-select" id="consoleSelect">
-            <div class="console-option" data-type="fat" onclick="selectConsole('fat')">
+        <div class="console-select">
+            <div class="console-option" onclick="selectConsole('fat')" data-type="fat">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/PS3-Fat-Console.jpg/220px-PS3-Fat-Console.jpg" alt="Fat PS3">
                 <h3>Fat PS3</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">CECH-A to Q</p>
             </div>
-            <div class="console-option" data-type="slim" onclick="selectConsole('slim')">
+            <div class="console-option" onclick="selectConsole('slim')" data-type="slim">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/PS3-Slim-Console.jpg/220px-PS3-Slim-Console.jpg" alt="Slim PS3">
                 <h3>Slim PS3</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">CECH-20xx to 30xx</p>
             </div>
-            <div class="console-option" data-type="superslim" onclick="selectConsole('superslim')">
+            <div class="console-option" onclick="selectConsole('superslim')" data-type="superslim">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/PS3-Super-Slim-Console.jpg/220px-PS3-Super-Slim-Console.jpg" alt="Super Slim PS3">
-                <h3>Super Slim PS3</h3>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">CECH-4xxx</p>
+                <h3>Super Slim</h3>
             </div>
         </div>
 
         <div class="checker-box">
-            <h3 style="text-align: center; margin-bottom: 10px;">Enter Your Model Number</h3>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Found on the sticker (e.g., CECH-2501A)</p>
+            <h3>Enter Model Number</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Found on the back sticker (e.g., CECH-2501A)</p>
             <div class="input-group">
                 <input type="text" id="modelInput" placeholder="CECH-XXXX" maxlength="15">
-                <button class="btn" onclick="checkModel()" style="margin-top: 0;">Check</button>
+                <button class="btn" onclick="checkModel()">Verify</button>
             </div>
 
             <div id="result" class="result-box">
@@ -95,11 +86,10 @@
             </div>
         </div>
     </main>
-    <footer><p>Built with 💜 by <span>saintcpmshop-source</span></p></footer>
+    <footer>BUILT WITH 💜 BY <span>SAINTCPMSHOP-SOURCE</span></footer>
 
     <script>
         let selectedType = null;
-
         function selectConsole(type) {
             selectedType = type;
             document.querySelectorAll('.console-option').forEach(el => el.classList.remove('selected'));
@@ -121,8 +111,8 @@
             btnCfw.style.display = 'none';
             btnHen.style.display = 'none';
 
-            if (!selectedType) { alert("Please select your console type first."); return; }
-            if (!input.startsWith("CECH")) { alert("Please enter a valid model starting with CECH."); return; }
+            if (!selectedType) { alert("Select a console type first."); return; }
+            if (!input.startsWith("CECH")) { alert("Enter a valid CECH model."); return; }
 
             resBox.style.display = 'block';
             actionButtons.style.display = 'flex';
@@ -130,8 +120,8 @@
             if (selectedType === 'fat') {
                 resBox.className = 'result-box result-success';
                 resIcon.innerHTML = '✅';
-                resTitle.innerHTML = 'YES - CFW Supported!';
-                resDesc.innerHTML = 'Your Fat PS3 is 100% compatible with Evilnat CFW and PS3HEN.';
+                resTitle.innerHTML = 'CFW Supported';
+                resDesc.innerHTML = 'Your Fat PS3 is fully compatible with Evilnat CFW and PS3HEN.';
                 btnCfw.style.display = 'inline-block';
                 btnHen.style.display = 'inline-block';
             }
@@ -139,34 +129,34 @@
                 if (input.includes('20') || input.includes('21')) {
                     resBox.className = 'result-box result-success';
                     resIcon.innerHTML = '✅';
-                    resTitle.innerHTML = 'YES - CFW Supported!';
-                    resDesc.innerHTML = 'Your Slim PS3 (CECH-20xx/21xx) is 100% compatible with Evilnat CFW and PS3HEN.';
+                    resTitle.innerHTML = 'CFW Supported';
+                    resDesc.innerHTML = 'Your Slim PS3 (CECH-20xx/21xx) is compatible with Evilnat CFW.';
                     btnCfw.style.display = 'inline-block';
                     btnHen.style.display = 'inline-block';
                 } else if (input.includes('25')) {
                     resBox.className = 'result-box result-hen';
                     resIcon.innerHTML = '⚠️';
-                    resTitle.innerHTML = 'CFW Possibly Supported';
-                    resDesc.innerHTML = 'Your CECH-25xx <strong>might</strong> support CFW. Run MinVerChk first. If 3.56 or lower, use CFW. If 3.60+, use HEN.';
+                    resTitle.innerHTML = 'Possibly Supported';
+                    resDesc.innerHTML = 'Your CECH-25xx might support CFW. Run MinVerChk. If 3.56 or lower, use CFW. If 3.60+, use HEN.';
                     btnCfw.style.display = 'inline-block';
                     btnHen.style.display = 'inline-block';
                 } else if (input.includes('30')) {
                     resBox.className = 'result-box result-fail';
                     resIcon.innerHTML = '❌';
-                    resTitle.innerHTML = 'NO - CFW Not Supported';
+                    resTitle.innerHTML = 'HEN Only';
                     resDesc.innerHTML = 'Your Slim PS3 (CECH-30xx) cannot install CFW. You must use PS3HEN.';
                     btnHen.style.display = 'inline-block';
                 } else {
                     resBox.className = 'result-box result-fail';
                     resIcon.innerHTML = '❌';
-                    resTitle.innerHTML = 'Unknown Model';
-                    resDesc.innerHTML = 'Could not identify your Slim model. Check your model number again.';
+                    resTitle.innerHTML = 'Unknown';
+                    resDesc.innerHTML = 'Could not identify your Slim model.';
                 }
             }
             else if (selectedType === 'superslim') {
                 resBox.className = 'result-box result-fail';
                 resIcon.innerHTML = '❌';
-                resTitle.innerHTML = 'NO - CFW Not Supported';
+                resTitle.innerHTML = 'HEN Only';
                 resDesc.innerHTML = 'Your Super Slim PS3 (CECH-4xxx) cannot install CFW. You must use PS3HEN.';
                 btnHen.style.display = 'inline-block';
             }
