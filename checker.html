@@ -32,7 +32,14 @@
         
         .result-icon { font-size: 4rem; margin-bottom: 15px; }
         .result-title { font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; }
-        .result-desc { color: var(--text-muted); font-size: 1rem; }
+        .result-desc { color: var(--text-muted); font-size: 1rem; margin-bottom: 20px; }
+        
+        /* New styles for the action buttons */
+        .action-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn-cfw { background: transparent; border: 2px solid var(--purple-bright); color: var(--purple-bright); }
+        .btn-cfw:hover { background: var(--purple-bright); color: white; box-shadow: 0 0 20px var(--purple-bright); }
+        .btn-hen { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+        .btn-hen:hover { background: var(--gold); color: var(--bg-dark); box-shadow: 0 0 20px var(--gold); }
     </style>
 </head>
 <body>
@@ -82,8 +89,11 @@
                 <div class="result-icon" id="resIcon"></div>
                 <div class="result-title" id="resTitle"></div>
                 <div class="result-desc" id="resDesc"></div>
-                <div id="resHenLink" style="margin-top: 15px; display: none;">
-                    <a href="hen.html" class="btn" style="font-size: 0.9rem;">View HEN Guide</a>
+                
+                <!-- Buttons that appear after checking -->
+                <div class="action-buttons" id="actionButtons" style="display: none;">
+                    <a href="cfw.html" id="btnCfw" class="btn btn-cfw">Go to CFW (Evilnat)</a>
+                    <a href="hen.html" id="btnHen" class="btn btn-hen">Go to HEN</a>
                 </div>
             </div>
         </div>
@@ -105,22 +115,30 @@
             const resIcon = document.getElementById('resIcon');
             const resTitle = document.getElementById('resTitle');
             const resDesc = document.getElementById('resDesc');
-            const henLink = document.getElementById('resHenLink');
+            const actionButtons = document.getElementById('actionButtons');
+            const btnCfw = document.getElementById('btnCfw');
+            const btnHen = document.getElementById('btnHen');
 
+            // Reset visibility
             resBox.style.display = 'none';
-            henLink.style.display = 'none';
+            actionButtons.style.display = 'none';
+            btnCfw.style.display = 'none';
+            btnHen.style.display = 'none';
 
             if (!selectedType) { alert("Please select your console type first."); return; }
             if (!input.startsWith("CECH")) { alert("Please enter a valid model starting with CECH."); return; }
 
             resBox.style.display = 'block';
+            actionButtons.style.display = 'flex';
 
-            // --- FAT PS3 (All support CFW) ---
+            // --- FAT PS3 (Supports CFW and HEN) ---
             if (selectedType === 'fat') {
                 resBox.className = 'result-box result-success';
                 resIcon.innerHTML = '✅';
                 resTitle.innerHTML = 'YES - CFW Supported!';
-                resDesc.innerHTML = 'Your Fat PS3 is 100% compatible with Evilnat CFW. All Fat models (CECH-A through CECH-Q) support custom firmware.';
+                resDesc.innerHTML = 'Your Fat PS3 is 100% compatible with Evilnat CFW and PS3HEN.';
+                btnCfw.style.display = 'inline-block';
+                btnHen.style.display = 'inline-block';
             }
             // --- SLIM PS3 ---
             else if (selectedType === 'slim') {
@@ -128,19 +146,22 @@
                     resBox.className = 'result-box result-success';
                     resIcon.innerHTML = '✅';
                     resTitle.innerHTML = 'YES - CFW Supported!';
-                    resDesc.innerHTML = 'Your Slim PS3 (CECH-20xx/21xx) is 100% compatible with Evilnat CFW.';
+                    resDesc.innerHTML = 'Your Slim PS3 (CECH-20xx/21xx) is 100% compatible with Evilnat CFW and PS3HEN.';
+                    btnCfw.style.display = 'inline-block';
+                    btnHen.style.display = 'inline-block';
                 } else if (input.includes('25')) {
                     resBox.className = 'result-box result-hen';
                     resIcon.innerHTML = '⚠️';
                     resTitle.innerHTML = 'CFW Possibly Supported';
-                    resDesc.innerHTML = 'Your CECH-25xx <strong>might</strong> support CFW. Run MinVerChk. If it reports 3.56 or lower, use Evilnat CFW. If 3.60+, you must use HEN.';
-                    henLink.style.display = 'block';
+                    resDesc.innerHTML = 'Your CECH-25xx <strong>might</strong> support CFW. Run MinVerChk first. If 3.56 or lower, use CFW. If 3.60+, use HEN.';
+                    btnCfw.style.display = 'inline-block'; // Show both so they can check MinVerChk
+                    btnHen.style.display = 'inline-block';
                 } else if (input.includes('30')) {
                     resBox.className = 'result-box result-fail';
                     resIcon.innerHTML = '❌';
                     resTitle.innerHTML = 'NO - CFW Not Supported';
-                    resDesc.innerHTML = 'Your Slim PS3 (CECH-30xx) cannot install CFW. However, you <strong>can</strong> use PS3HEN.';
-                    henLink.style.display = 'block';
+                    resDesc.innerHTML = 'Your Slim PS3 (CECH-30xx) cannot install CFW. You must use PS3HEN.';
+                    btnHen.style.display = 'inline-block';
                 } else {
                     resBox.className = 'result-box result-fail';
                     resIcon.innerHTML = '❌';
@@ -148,13 +169,13 @@
                     resDesc.innerHTML = 'Could not identify your Slim model. Check your model number again.';
                 }
             }
-            // --- SUPER SLIM ---
+            // --- SUPER SLIM (Only HEN) ---
             else if (selectedType === 'superslim') {
                 resBox.className = 'result-box result-fail';
                 resIcon.innerHTML = '❌';
                 resTitle.innerHTML = 'NO - CFW Not Supported';
-                resDesc.innerHTML = 'Your Super Slim PS3 (CECH-4xxx) cannot install CFW. However, you <strong>can</strong> use PS3HEN.';
-                henLink.style.display = 'block';
+                resDesc.innerHTML = 'Your Super Slim PS3 (CECH-4xxx) cannot install CFW. You must use PS3HEN.';
+                btnHen.style.display = 'inline-block';
             }
         }
     </script>
